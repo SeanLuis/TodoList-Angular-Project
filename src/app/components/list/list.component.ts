@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { Task } from './../../models/task';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class RequireStateMatcher implements ErrorStateMatcher {
@@ -16,14 +17,13 @@ export class RequireStateMatcher implements ErrorStateMatcher {
 })
 
 export class ListComponent implements OnInit {
-  public tasks: string[]    = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
-  public taskFormControl    = new FormControl('', [
-    Validators.required,
-  ]);
-  public newTask: string    = '';
-  public selected: string[] = [];
-
-  matcher = new RequireStateMatcher();
+  tasks: Array<Task>    = new Array<Task>();
+  name                  = new FormControl('', [
+                            Validators.required,
+                          ]);
+  @Input() task!: Task;
+  selected: string[]    = [];
+  matcher               = new RequireStateMatcher();
 
   constructor() { }
 
@@ -31,12 +31,18 @@ export class ListComponent implements OnInit {
   }
 
   public addToList() {
-    if (this.newTask == '') {
+    console.log(this.name)
+    if (!this.name) {
       return
     }
     else {
-      this.tasks.push(this.newTask);
-      this.newTask = '';
+      this.task = {
+        id: 1,
+        name: this.name.value,
+        description: "La misma para todos",
+        solve: false
+      }
+      this.tasks.push(this.task);
     }
   }
 
@@ -44,11 +50,14 @@ export class ListComponent implements OnInit {
     this.tasks.splice(index, 1);
   }
 
-  public deleteTasks(select: any) {
-    console.log()
-    select.forEach((item: { value: any; }) => {
-      console.log(item.value)
+  public deleteTasks(selects: Array<Task>) {
+    selects.forEach((item: Task) => {
+      console.log(item)
     })
+  }
+
+  public done(task: Task) {
+    task.solve = !task.solve ;
   }
 
 }
