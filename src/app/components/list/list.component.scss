@@ -40,3 +40,34 @@
     background-color: #3131311c;
     color: #363636;
 }
+
+.button-actions {
+  display: flex !important;
+  justify-content: space-between;
+}
+
+@media all and (max-width: 800px) {
+  .button-legend {
+    margin-bottom: 10px;
+  }
+
+  .d-flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card {
+    width: 300px;
+    height: auto;
+  }
+
+  .item-style {
+    margin-block: 15px;
+  }
+
+  .description-text {
+    font-size: 14px !important;
+  }
+}

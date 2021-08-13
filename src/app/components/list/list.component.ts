@@ -1,3 +1,4 @@
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -11,6 +12,7 @@ export class RequireStateMatcher implements ErrorStateMatcher {
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -62,6 +64,7 @@ export class ListComponent implements OnInit {
         description: "La misma para todos",
         solve: false
       }
+      this.filtered = Array<Task>();
       this.tasks.push(this.task);
       this.name.reset();
       this.name.setErrors(null);
