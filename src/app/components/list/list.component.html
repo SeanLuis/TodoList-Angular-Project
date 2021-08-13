@@ -8,17 +8,17 @@
       <mat-card-content class="d-flex justify-space-between pa-3">
         <button mat-flat-button color="legend" class="button-legend"
                 [matBadge]="tasks.length" matBadgePosition="before" matBadgeColor="accent"
-                (click)="showAll()" [disabled]="!(tasks.length > 0)">
+                (click)="showAll()" [disabled]="!(tasks.length > 0)" [matBadgeHidden]="!(tasks.length > 0)">
           total
         </button>
         <button mat-flat-button color="legend" class="button-legend"
                 [matBadge]="getComplete()" matBadgePosition="before" matBadgeColor="accent"
-                (click)="showComplete()" [disabled]="!(getComplete() > 0)">
+                (click)="showComplete()" [disabled]="!(getComplete() > 0)" [matBadgeHidden]="!(getComplete() > 0)">
           completdas
         </button>
         <button mat-flat-button color="legend" class="button-legend"
                 [matBadge]="getIncomplete()" matBadgePosition="before" matBadgeColor="accent"
-                (click)="showIncomplete()" [disabled]="!(getIncomplete() > 0)">
+                (click)="showIncomplete()" [disabled]="!(getIncomplete() > 0)" [matBadgeHidden]="!(getIncomplete() > 0)">
           sin completar
         </button>
       </mat-card-content>

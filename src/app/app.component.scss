@@ -20,6 +20,10 @@
     margin: 0;
   }
 
+  :host ::ng-deep .mat-pseudo-checkbox-checked {
+    background-color: #f957a1;
+  }
+
   .content {
     display: flex;
     margin: 82px auto 32px;
