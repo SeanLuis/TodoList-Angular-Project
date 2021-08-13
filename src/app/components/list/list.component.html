@@ -39,15 +39,17 @@
         <mat-card-title>TodoList</mat-card-title>
         <mat-card-subtitle>Lleva tu lista de tareas a donde desees</mat-card-subtitle>
       </mat-card-header>
-      <mat-selection-list #tasksSelected
+      <mat-selection-list cdkDrop
+                          (cdkDropDropped)="drop($event)"
                           *ngIf="(tasks && tasks.length > 0); else noData"
                           [(ngModel)]="selects"
       >
         <mat-list-item class="item-style"
+                       cdkDrag
                        *ngFor="let task of filtered && filtered.length > 0 ? filtered : tasks; let index = index;"
                        (click)="selectIndexes(index)"
         >
-          <button mat-icon-button (click)="deleteTask(index)" aria-label="Example icon button with a open in new tab icon">
+          <button mat-icon-button (click)="deleteTask(index)">
             <mat-icon color="warn" style="font-size: 16px;">remove_circle_outline</mat-icon>
           </button>
           <mat-list-option [selected]="task.solve" [value]="task" (click)="done(task)">

@@ -1,5 +1,5 @@
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { TaskService } from './../../services/task.service';
@@ -24,7 +24,7 @@ export class ListComponent implements OnInit {
   name                      = new FormControl('', [
                                   Validators.required,
                                 ]);
-  @Input() task!: Task;
+  task!: Task;
   selected: string[]        = [];
   matcher                   = new RequireStateMatcher();
   selects: Array<Task>      = new Array<Task>();
@@ -35,6 +35,29 @@ export class ListComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.loadTasks();
+  }
+
+  private isDragDrop(object: any): object is CdkDragDrop<Task[]> {
+    return 'previousIndex' in object;
+  }
+
+  public drop(event: Event)  {
+    if (this.isDragDrop(event)) {
+      if (event.previousContainer === event.container) {
+        moveItemInArray(
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+      }
+    }
   }
 
   private async loadTasks(): Promise<void> {
