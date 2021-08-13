@@ -1,40 +1,81 @@
-<mat-card class="card">
-  <mat-card-header>
-    <div mat-card-avatar class="avatar-header-image"></div>
-    <mat-card-title>TodoList</mat-card-title>
-    <mat-card-subtitle>Lleva tu lista de tareas a donde desees</mat-card-subtitle>
-  </mat-card-header>
-  <mat-selection-list #tasksSelected *ngIf="tasks && tasks.length > 0, noData">
-    <mat-list-item *ngFor="let task of tasks; let index = index;">
-      <button mat-icon-button (click)="deleteTask(index)" aria-label="Example icon button with a open in new tab icon">
-        <mat-icon color="warn" style="font-size: 16px;">remove_circle_outline</mat-icon>
-      </button>
-      <mat-list-option [value]="task" (click)="done(task)">
-        <p [class]="task.solve ? 'solve' : ''">{{task.name}}</p>
-      </mat-list-option>
-    </mat-list-item>
-  </mat-selection-list>
-  <mat-selection-list #tasksSelected #noData>
-    <mat-list-item>
-      <p> No hay tareas disponibles </p>
-    </mat-list-item>
-  </mat-selection-list>
-  <mat-card-content class="mt-3">
-    <form class="form">
-      <mat-form-field class="full-width" appearance="fill">
-        <mat-label>Nombre de la tarea</mat-label>
-        <input type="text" matInput [formControl]="name" [errorStateMatcher]="matcher"
-              placeholder="Escriba una tarea" (keyup.enter)="addToList();"
-        >
-        <mat-hint>Campo requerido!</mat-hint>
-        <mat-error *ngIf="name.hasError('required')">
-          EL campo es <strong>requerido</strong>
-        </mat-error>
-      </mat-form-field>
-    </form>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button (click)="addToList()" >Guardar</button>
-    <button mat-button>Borrar</button>
-  </mat-card-actions>
-</mat-card>
+<div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
+  <div fxFlex="100%">
+    <mat-card class="card">
+      <mat-card-header>
+        <mat-card-title>Leyenda</mat-card-title>
+        <mat-card-subtitle>Status de las tareas</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="d-flex justify-space-between pa-3">
+        <button mat-flat-button color="legend" class="button-legend"
+                [matBadge]="tasks.length" matBadgePosition="before" matBadgeColor="accent"
+                (click)="showAll()" [disabled]="!(tasks.length > 0)">
+          total
+        </button>
+        <button mat-flat-button color="legend" class="button-legend"
+                [matBadge]="getComplete()" matBadgePosition="before" matBadgeColor="accent"
+                (click)="showComplete()" [disabled]="!(getComplete() > 0)">
+          completdas
+        </button>
+        <button mat-flat-button color="legend" class="button-legend"
+                [matBadge]="getIncomplete()" matBadgePosition="before" matBadgeColor="accent"
+                (click)="showIncomplete()" [disabled]="!(getIncomplete() > 0)">
+          sin completar
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxFlex="100%" class="mt-3">
+    <mat-card class="card">
+      <mat-card-header>
+        <div mat-card-avatar class="avatar-header-image"></div>
+        <mat-card-title>TodoList</mat-card-title>
+        <mat-card-subtitle>Lleva tu lista de tareas a donde desees</mat-card-subtitle>
+      </mat-card-header>
+      <mat-selection-list #tasksSelected *ngIf="(tasks && tasks.length > 0); else noData" [(ngModel)]="selects">
+        <mat-list-item *ngFor="let task of filtered && filtered.length > 0 ? filtered : tasks; let index = index;" (click)="selectIndexes(index)">
+          <button mat-icon-button (click)="deleteTask(index)" aria-label="Example icon button with a open in new tab icon">
+            <mat-icon color="warn" style="font-size: 16px;">remove_circle_outline</mat-icon>
+          </button>
+          <mat-list-option [selected]="task.solve" [value]="task" (click)="done(task)">
+            <mat-card-title [class]="task.solve ? 'solve' : ''"><strong>{{index+1}}-</strong>  {{task.name}}</mat-card-title>
+            <mat-card-subtitle>{{task.description}}</mat-card-subtitle>
+          </mat-list-option>
+        </mat-list-item>
+      </mat-selection-list>
+      <ng-template #noData>
+        <mat-selection-list>
+          <mat-list-item>
+            <p> No hay tareas disponibles </p>
+          </mat-list-item>
+        </mat-selection-list>
+      </ng-template >
+      <mat-card-content class="mt-3">
+        <form class="form">
+          <mat-form-field class="full-width" appearance="fill">
+            <mat-label>Nombre de la tarea</mat-label>
+            <input type="text" matInput [formControl]="name" [errorStateMatcher]="matcher"
+                  placeholder="Escriba una tarea" (keyup.enter)="addToList();"
+            >
+            <mat-hint>Campo requerido!</mat-hint>
+            <mat-error *ngIf="name.hasError('required')">
+              EL campo es <strong>requerido</strong>
+            </mat-error>
+          </mat-form-field>
+        </form>
+      </mat-card-content>
+      <mat-card-actions>
+        <div class="d-flex justify-space-between">
+          <div fxFlex="50" >
+            <button mat-button (click)="deleteTasks()" color="grey" [disabled]="!(indexes && indexes.length > 0)">Eliminar completadas</button>
+          </div>
+          <div fxFlex="50">
+            <button mat-button (click)="addToList()" color="success">Adicionar</button>
+          </div>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+
+
+

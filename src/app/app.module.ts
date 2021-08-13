@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,6 +13,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -19,6 +22,7 @@ import { MatCardModule } from '@angular/material/card';
     ListComponent,
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     BrowserAnimationsModule,
     MatButtonModule,
@@ -28,7 +32,9 @@ import { MatCardModule } from '@angular/material/card';
     MatFormFieldModule,
     MatCardModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDividerModule,
+    MatBadgeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

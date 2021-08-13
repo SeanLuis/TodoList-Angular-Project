@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
+import { TaskService } from './../../services/task.service';
 import { Task } from './../../models/task';
 
 /** Error when invalid control is dirty, touched, or submitted. */
@@ -17,44 +18,104 @@ export class RequireStateMatcher implements ErrorStateMatcher {
 })
 
 export class ListComponent implements OnInit {
-  tasks: Array<Task>    = new Array<Task>();
-  name                  = new FormControl('', [
-                            Validators.required,
-                          ]);
+  tasks: Array<Task>        = new Array<Task>();
+  name                      = new FormControl('', [
+                                  Validators.required,
+                                ]);
   @Input() task!: Task;
-  selected: string[]    = [];
-  matcher               = new RequireStateMatcher();
+  selected: string[]        = [];
+  matcher                   = new RequireStateMatcher();
+  selects: Array<Task>      = new Array<Task>();
+  indexes: Array<number>    = Array<number>();
+  filtered: Array<Task>     = Array<Task>();
 
-  constructor() { }
+  constructor(private taskService: TaskService) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.loadTasks();
+  }
+
+  private async loadTasks(): Promise<void> {
+    this.taskService
+      .load()
+      .subscribe(response => {
+        this.tasks = new Array<Task>();
+        Object.assign(this.tasks, response);
+
+        this.tasks.forEach((task, index) => {
+          if(task.solve)
+            this.indexes.push(index)
+        })
+
+      }, err => {
+        console.log(err);
+      })
   }
 
   public addToList() {
-    console.log(this.name)
-    if (!this.name) {
+    if (!this.name.value || this.name.value === '') {
       return
     }
     else {
       this.task = {
-        id: 1,
         name: this.name.value,
         description: "La misma para todos",
         solve: false
       }
       this.tasks.push(this.task);
+      this.name.reset();
+      this.name.setErrors(null);
     }
+  }
+
+  showComplete() {
+    this.filtered   = this.tasks.filter(task => task.solve)
+  }
+
+  showAll() {
+    this.filtered = Array<Task>();
+  }
+
+  showIncomplete() {
+    this.filtered = this.tasks.filter(task => !task.solve)
+  }
+
+  public getComplete() {
+    let complete = this.tasks.filter(task => task.solve)
+    return complete.length;
+  }
+
+  public getIncomplete() {
+    let incomplete = this.tasks.filter(task => !task.solve)
+    return incomplete.length;
   }
 
   public deleteTask(index: number) {
     this.tasks.splice(index, 1);
   }
 
-  public deleteTasks(selects: Array<Task>) {
-    selects.forEach((item: Task) => {
-      console.log(item)
+  public deleteTasks() {
+    this.indexes.forEach((index) => {
+      this.tasks.splice(index, 1);
     })
+    this.indexes = Array<number>();
+    this.filtered = Array<Task>();
   }
+
+  public selectIndexes(index: number) {
+    if(this.indexes.includes(index)) {
+      this.removeItemFromArr(this.indexes, index);
+    } else {
+      this.indexes.push(index);
+    }
+
+    console.log(this.indexes)
+  }
+
+  private removeItemFromArr ( arr: Array<number>, item: number) {
+    var i = arr.indexOf( item );
+    arr.splice( i, 1 );
+}
 
   public done(task: Task) {
     task.solve = !task.solve ;
